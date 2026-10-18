@@ -2,6 +2,7 @@
   "name": "meal-map",
   "private": true,
   "version": "0.0.0",
+  "homepage": "https://tushar-joshi-dev.github.io/meal-map",
   "type": "module",
   "scripts": {
     "dev": "vite",

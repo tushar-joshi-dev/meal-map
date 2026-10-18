@@ -35,12 +35,6 @@ const CategoryBox: React.FC<CategoryBoxProps> = ({ title, items, slots, onSelect
                             );
                             const isSelected = !!matchingSlot;
 
-                            // 2. Extract sub-option text if a compound string is in the grid
-                            let selectedSubOption = "";
-                            if (matchingSlot && matchingSlot.mealName && matchingSlot.mealName.includes('(')) {
-                                selectedSubOption = matchingSlot.mealName.split('(')[1].replace(')', '');
-                            }
-
                             return (
                                 <div key={idx} className="flex flex-col gap-1">
                                     {/* Row Box Container */}
