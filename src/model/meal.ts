@@ -4,3 +4,8 @@ export interface GridSlot {
   col: number;
   mealName: string | null;
 }
+
+export interface MenuItem {
+  name: string;
+  options?: string[];
+}
