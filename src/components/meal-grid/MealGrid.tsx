@@ -46,6 +46,7 @@ const MealGrid: React.FC = () => {
             const targetSlot = slots[targetSlotIdx];
             if (targetSlot.meals.length >= MAX_MEALS_PER_SLOT) return;
 
+            // Create shallow clones of the arrays to maintain immutability principles cleanly
             const newSlots = [...slots];
             const sourceMeals = [...newSlots[sourceSlotIdx].meals];
             const targetMeals = [...newSlots[targetSlotIdx].meals];
@@ -63,6 +64,10 @@ const MealGrid: React.FC = () => {
                 newSlots[targetSlotIdx].meals = targetMeals;
             }
 
+            /* 
+              CRITICAL CHECK: Ensure this is a direct array assignment parameter call!
+              Do NOT use a functional callback wrapper signature here like setSlots(prev => ...).
+            */
             setSlots(newSlots);
         } catch (error) {
             console.error("Failed to parse drag-and-drop metadata:", error);

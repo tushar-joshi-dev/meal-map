@@ -7,10 +7,10 @@
 2. Copy formatting
 3. Calendar dropdown for first date (rest gets populate - default today) [DONE]
 4. Colors per category [DONE]
+1. Local storage and reset. [DONE]
 
 # Long-term Items
 
-1. Local storage and reset.
 1. Associate preferred bucket (B-L-D) for each category.
 3. Support for fruits.
 1. Ingredient list to go along with selected items.
