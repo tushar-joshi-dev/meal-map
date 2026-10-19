@@ -1,11 +1,13 @@
 import React, { createContext, useContext, useState } from 'react';
-import type { GridSlot } from '../model/meal';
+import type { GridSlot, MealItem } from '../model/meal';
 
 interface MealGridContextType {
     slots: GridSlot[];
     setSlots: React.Dispatch<React.SetStateAction<GridSlot[]>>;
-    addMealToGrid: (mealName: string) => void;
+    addMealToGrid: (meal: MealItem) => void;
 }
+
+export const MAX_MEALS_PER_SLOT = 3;
 
 const MealGridContext = createContext<MealGridContextType | undefined>(undefined);
 
@@ -18,38 +20,52 @@ export const MealGridProvider: React.FC<{ children: React.ReactNode }> = ({ chil
         const initialSlots: GridSlot[] = [];
         for (let r = 1; r <= totalRows; r++) {
             for (let c = 1; c <= totalCols; c++) {
-                initialSlots.push({ id: `r${r}c${c}`, row: r, col: c, mealName: null });
+                initialSlots.push({ id: `r${r}c${c}`, row: r, col: c, meals: [] });
             }
         }
         return initialSlots;
     });
 
     // Expose this method so clicking any item drops it into the first vacant slot
-    const addMealToGrid = (mealName: string) => {
+    const addMealToGrid = (meal: MealItem) => {
         setSlots((prevSlots) => {
-            // 1. Extract the base name in case it has a sub-option (e.g., "Thai Green Curry (Jasmine Rice)")
-            const hasParenthesis = mealName.includes(' (');
-            const baseName = hasParenthesis ? mealName.split(' (')[0] : mealName;
+            const MAX_MEALS_PER_SLOT = 3;
 
-            // 2. Check if this meal (or any sub-option variant of it) is already present in the grid
+            // RULE 2: Find if this base meal name exists ANYWHERE, regardless of its option variant
             const existingIdx = prevSlots.findIndex(s =>
-                s.mealName === mealName || (s.mealName && s.mealName.startsWith(`${baseName} (`))
+                s.meals && s.meals.some(slotMeal => slotMeal.name === meal.name)
             );
 
-            const newSlots = [...prevSlots];
-
-            // 3. DESELECT ACTION: If it exists, wipe out the text data to empty the slot
+            // DESELECT ACTION: If it exists, clear it completely out of the layout
             if (existingIdx !== -1) {
-                newSlots[existingIdx] = { ...newSlots[existingIdx], mealName: null };
-                return newSlots;
+                return prevSlots.map((slot, idx) => {
+                    if (idx !== existingIdx) return slot;
+                    return {
+                        ...slot,
+                        // Filter out by base name so old variants are completely purged
+                        meals: slot.meals.filter(slotMeal => slotMeal.name !== meal.name)
+                    };
+                });
             }
 
-            // 4. SELECT ACTION: If it doesn't exist, locate the first vacant cell slot
-            const targetIdx = prevSlots.findIndex(s => s.mealName === null);
-            if (targetIdx === -1) return prevSlots; // Grid is full!
+            // SELECT ACTION: Find priority slots (pristine empty spaces first)
+            let targetIdx = prevSlots.findIndex(s => !s.meals || s.meals.length === 0);
 
-            newSlots[targetIdx] = { ...newSlots[targetIdx], mealName };
-            return newSlots;
+            // FALLBACK: Find the first available partial slot configuration
+            if (targetIdx === -1) {
+                targetIdx = prevSlots.findIndex(s => (s.meals?.length || 0) < MAX_MEALS_PER_SLOT);
+            }
+
+            if (targetIdx === -1) return prevSlots; // At capacity
+
+            // Append item to target
+            return prevSlots.map((slot, idx) => {
+                if (idx !== targetIdx) return slot;
+                return {
+                    ...slot,
+                    meals: [...(slot.meals || []), meal]
+                };
+            });
         });
     };
 

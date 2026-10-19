@@ -1,9 +1,9 @@
 # Next Items
 
 1. Actual data
-1. Change status flag to instead show version
-1. Fix bug where tooltip is lost on menu item
-2. Enable support for multiple items in a box (like, multiple items for a meal)
+1. Change status flag to instead show version [DONE]
+1. Fix bug where tooltip is lost on menu item [DONE]
+2. Enable support for multiple items in a box (like, multiple items for a meal) [DONE]
 2. Copy formatting
 3. Calendar dropdown for first date (rest gets populate - default today)
 4. Colors per category
