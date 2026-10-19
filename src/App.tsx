@@ -17,7 +17,7 @@ function App() {
       {/* 
       Main content padding clears the fixed header and ensures content never gets clipped behind the footer at the bottom 
     */}
-      <main className="w-full pt-20 pb-[140px] px-6">
+      <main className="w-full pt-20 pb-[175px] px-6">
         <PlanBuilderPage />
       </main>
 

@@ -5,6 +5,8 @@ interface MealGridContextType {
     slots: GridSlot[];
     setSlots: React.Dispatch<React.SetStateAction<GridSlot[]>>;
     addMealToGrid: (meal: MealItem) => void;
+    startDate: string;
+    setStartDate: (date: string) => void;
 }
 
 export const MAX_MEALS_PER_SLOT = 3;
@@ -14,6 +16,14 @@ const MealGridContext = createContext<MealGridContextType | undefined>(undefined
 export const MealGridProvider: React.FC<{ children: React.ReactNode }> = ({ children }) => {
     const totalCols = 7;
     const totalRows = 3;
+
+    // Default initialization string to local current calendar standard: e.g., "2026-10-19"
+    const [startDate, setStartDate] = useState<string>(() => {
+        const today = new Date();
+        const offset = today.getTimezoneOffset();
+        const localToday = new Date(today.getTime() - (offset * 60 * 1000));
+        return localToday.toISOString().split('T')[0];
+    });
 
     // Initialize your 21 empty slot grid array layout state
     const [slots, setSlots] = useState<GridSlot[]>(() => {
@@ -70,7 +80,7 @@ export const MealGridProvider: React.FC<{ children: React.ReactNode }> = ({ chil
     };
 
     return (
-        <MealGridContext.Provider value={{ slots, setSlots, addMealToGrid }}>
+        <MealGridContext.Provider value={{ slots, setSlots, addMealToGrid, startDate, setStartDate }}>
             {children}
         </MealGridContext.Provider>
     );

@@ -1,4 +1,5 @@
 import logo from '../../assets/logo.png';
+import DatePicker from '../input/DatePicker';
 
 const APP_VERSION = 'v0.1';
 
@@ -17,6 +18,11 @@ const Header = () => {
                 <span className="text-base font-bold tracking-tight hidden sm:inline-block leading-none">
                     MealMap
                 </span>
+            </div>
+            
+            {/* MIDDLE CONTAINER: Render the modular component dynamically */}
+            <div className="flex items-center h-full">
+                <DatePicker />
             </div>
 
             {/* RIGHT CONTAINER: Combined Nav & Actions */}
