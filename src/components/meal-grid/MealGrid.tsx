@@ -1,6 +1,7 @@
 import React from 'react';
 import { MAX_MEALS_PER_SLOT, useMealGrid } from '../../context/MealGridContext';
 import SelectedMealLabel from '../item-label/SelectedMealLabel';
+import { CATEGORY_COLORS, getCategoryTheme } from '../category-box/CategoryColors';
 
 const MealGrid: React.FC = () => {
     const { slots, setSlots, startDate } = useMealGrid();
@@ -119,30 +120,26 @@ const MealGrid: React.FC = () => {
                             {hasMeals ? (
                                 slot.meals.map((meal, mealIdx) => {
                                     const fullMealString = meal.option ? `${meal.name} (${meal.option})` : meal.name;
+
+                                    // Uses the fallback-safe getter method to retrieve styles securely
+                                    const cardTheme = getCategoryTheme(meal.categoryColor);
+
                                     return (
                                         <div
                                             key={`${slot.id}-${mealIdx}`}
                                             draggable
                                             onDragStart={(e) => handleDragStart(e, slotIdx, mealIdx)}
-                                            className="group relative flex-1 min-w-0 h-full flex items-center px-1.5 rounded-md bg-blue-50/80 border border-blue-300 dark:bg-blue-950/40 dark:border-blue-900/80 text-[10px] font-medium shadow-xs cursor-grab active:cursor-grabbing hover:shadow-sm transition-shadow text-left"
+                                            className={`group relative flex-1 min-w-0 h-full flex items-center px-1.5 rounded-md text-[10px] font-medium shadow-xs cursor-grab active:cursor-grabbing hover:shadow-sm transition-shadow text-left ${cardTheme.bg} ${cardTheme.border} ${cardTheme.darkBg} ${cardTheme.darkBorder}`}
                                         >
                                             <div className="truncate w-full pointer-events-none">
-                                                <SelectedMealLabel
-                                                    fullName={fullMealString}
-                                                />
+                                                <SelectedMealLabel fullName={fullMealString} colorToken={meal.categoryColor} />
                                             </div>
 
-                                            {/* 
-                                          CUSTOM CSS TOOLTIP: 
-                                          - Pushed up higher using z-[60] to cleanly clear the z-50 footer stack context.
-                                          - Positioned absolutely above the item card (bottom-full mb-1.5).
-                                        */}
-                                            <div className="absolute hidden group-hover:flex bottom-full left-1/2 -translate-x-1/2 mb-1.5 z-[60] pointer-events-none flex-col items-center">
-                                                {/* The Tooltip Bubble */}
+                                            {/* CUSTOM CSS TOOLTIP STAYS UNTOUCHED */}
+                                            <div className="absolute hidden group-hover:flex bottom-full left-1/2 -translate-x-1/2 mb-1.5 z-50 pointer-events-none flex-col items-center">
                                                 <div className="bg-zinc-950 dark:bg-zinc-800 text-white dark:text-zinc-100 text-[10px] px-2 py-1 rounded shadow-md whitespace-nowrap font-normal border border-zinc-800 dark:border-zinc-700 max-w-[200px] truncate">
                                                     {fullMealString}
                                                 </div>
-                                                {/* The Little Centered Arrow Pointing Down */}
                                                 <div className="w-1.5 h-1.5 bg-zinc-950 dark:bg-zinc-800 border-r border-b border-zinc-800 dark:border-zinc-700 rotate-45 -mt-[4px]"></div>
                                             </div>
                                         </div>

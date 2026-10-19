@@ -1,11 +1,12 @@
 import React from 'react';
+import { getCategoryTheme, type CategoryColorToken } from '../category-box/CategoryColors';
 
 interface SelectedMealLabelProps {
   fullName: string;
+  colorToken?: CategoryColorToken; // Accepts the color identification key
 }
 
-const SelectedMealLabel: React.FC<SelectedMealLabelProps> = ({ fullName }) => {
-  // Extract base meal name and sub-option safely (e.g. "Thai Curry (Jasmine Rice)")
+const SelectedMealLabel: React.FC<SelectedMealLabelProps> = ({ fullName, colorToken }) => {
   let baseName = fullName;
   let subOption = "";
 
@@ -15,13 +16,16 @@ const SelectedMealLabel: React.FC<SelectedMealLabelProps> = ({ fullName }) => {
     subOption = parts[1].replace(')', '');
   }
 
+  // Fallback cleanly to standard default blue configuration styles if unknown configurations surface
+  const theme = getCategoryTheme(colorToken);
+
   return (
     <div title={fullName} className="truncate text-left w-full select-none">
-      <span className="font-semibold text-blue-700 dark:text-blue-300">
+      <span className={`font-semibold ${theme.text} ${theme.darkText}`}>
         {baseName}
       </span>
       {subOption && (
-        <span className="text-blue-600/80 dark:text-blue-400/80 font-medium ml-1.5 whitespace-nowrap">
+        <span className={`font-medium ml-1.5 whitespace-nowrap ${theme.subText} ${theme.darkSubText}`}>
           + {subOption}
         </span>
       )}

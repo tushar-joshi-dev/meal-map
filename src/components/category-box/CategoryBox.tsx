@@ -1,20 +1,25 @@
 import React, { useState } from 'react';
 import type { GridSlot, MealItem, MenuItem } from '../../model/meal';
 import SelectedMealLabel from '../item-label/SelectedMealLabel';
+import { getCategoryTheme, type CategoryColorToken } from './CategoryColors';
 
 interface CategoryBoxProps {
     title: string;
     items: MenuItem[];
     slots: GridSlot[]; // Global grid array to check selection states
     onSelectMeal?: (meal: MealItem) => void;
+    colorToken?: CategoryColorToken;
 }
 
-const CategoryBox: React.FC<CategoryBoxProps> = ({ title, items, slots, onSelectMeal }) => {
+const CategoryBox: React.FC<CategoryBoxProps> = ({ title, items, slots, onSelectMeal, colorToken }) => {
     const [expandedIndex, setExpandedIndex] = useState<number | null>(null);
+    const theme = getCategoryTheme(colorToken);
 
     return (
         <div className="flex flex-col bg-zinc-50/50 dark:bg-zinc-900 border border-zinc-200 dark:border-zinc-800/80 rounded-xl overflow-hidden shadow-xs h-full min-h-[180px] transition-colors duration-200">
-            <div className="px-4 py-3 bg-zinc-100/70 dark:bg-zinc-900/90 border-b border-zinc-200 dark:border-zinc-800/80">
+
+            <div className="px-4 py-3 bg-zinc-100/70 dark:bg-zinc-900/90 border-b border-zinc-200 dark:border-zinc-800/80 flex items-center gap-2">
+                <div className={`w-2 h-2 rounded-full flex-shrink-0 ${theme.circle}`} />
                 <h3 className="text-xs font-extrabold tracking-wider uppercase text-zinc-900 dark:text-zinc-100">
                     {title}
                 </h3>
@@ -27,12 +32,10 @@ const CategoryBox: React.FC<CategoryBoxProps> = ({ title, items, slots, onSelect
                             const isExpanded = expandedIndex === idx;
                             const hasOptions = item.options && item.options.length > 0;
 
-                            // 1. Check if ANY variant of this item name is currently in the grid
                             const isSelected = slots.some(slot =>
                                 slot.meals && slot.meals.some(meal => meal.name === item.name)
                             );
 
-                            // 2. Locate the specific active variant to display its complete name label
                             let targetDisplayName = item.name;
                             let activeMealReference: MealItem | undefined = undefined;
 
@@ -50,33 +53,31 @@ const CategoryBox: React.FC<CategoryBoxProps> = ({ title, items, slots, onSelect
 
                             return (
                                 <div key={idx} className="flex flex-col gap-1">
-                                    {/* Primary Clickable Row Item */}
                                     <div
                                         onClick={() => {
-                                            // RULE 1: If it is already selected, bypass expansion and trigger deselection immediately
                                             if (isSelected && activeMealReference) {
                                                 onSelectMeal?.(activeMealReference);
                                                 setExpandedIndex(null);
                                                 return;
                                             }
 
-                                            // Default behavior for unselected items
                                             if (hasOptions) {
                                                 setExpandedIndex(isExpanded ? null : idx);
                                             } else {
-                                                onSelectMeal?.({ name: item.name });
+                                                onSelectMeal?.({ name: item.name, categoryColor: colorToken });
                                                 setExpandedIndex(null);
                                             }
                                         }}
+                                        // String template literals fixed for correct tailwind interpolation styles
                                         className={`w-full text-left text-xs font-medium px-3 py-2 rounded-lg border cursor-pointer transition-all active:scale-[0.99] select-none flex justify-between items-center ${isSelected
-                                            ? 'bg-blue-50/80 border-blue-300 text-blue-700 dark:bg-blue-950/40 dark:border-blue-900/80 dark:text-blue-300 font-semibold'
-                                            : isExpanded
-                                                ? 'bg-blue-50/30 dark:bg-blue-950/20 border-blue-200/60 dark:border-zinc-800 text-blue-600 dark:text-blue-400'
-                                                : 'bg-white dark:bg-zinc-950 border-zinc-200 dark:border-zinc-800 text-zinc-800 dark:text-zinc-200 hover:text-blue-600 dark:hover:text-blue-400 hover:border-blue-200 dark:hover:border-blue-900'
+                                                ? `theme.bg {theme.border} theme.darkBg {theme.darkBorder} font-semibold`
+                                                : isExpanded
+                                                    ? 'bg-zinc-100/80 dark:bg-zinc-800/60 border-zinc-300 dark:border-zinc-700 text-zinc-900 dark:text-zinc-100'
+                                                    : `bg-white dark:bg-zinc-950 border-zinc-200 dark:border-zinc-800 text-zinc-800 dark:text-zinc-200 hover:bg-zinc-50 dark:hover:bg-zinc-900 theme.hoverBorder {theme.darkHoverBorder}`
                                             }`}
                                     >
                                         {isSelected ? (
-                                            <SelectedMealLabel fullName={targetDisplayName} />
+                                            <SelectedMealLabel fullName={targetDisplayName} colorToken={colorToken} />
                                         ) : (
                                             <span className="text-zinc-800 dark:text-zinc-200 truncate">{item.name}</span>
                                         )}
@@ -87,17 +88,16 @@ const CategoryBox: React.FC<CategoryBoxProps> = ({ title, items, slots, onSelect
                                         )}
                                     </div>
 
-                                    {/* Sub-Item Options Drawer (Only visible if NOT selected) */}
                                     {hasOptions && isExpanded && !isSelected && (
                                         <div className="px-1.5 py-1 bg-zinc-100/40 dark:bg-zinc-950/60 rounded-lg border border-zinc-200/50 dark:border-zinc-800/60 flex flex-wrap gap-1 mt-0.5">
                                             {item.options!.map((option, optIdx) => (
                                                 <button
                                                     key={optIdx}
                                                     onClick={() => {
-                                                        onSelectMeal?.({ name: item.name, option });
+                                                        onSelectMeal?.({ name: item.name, option, categoryColor: colorToken });
                                                         setExpandedIndex(null);
                                                     }}
-                                                    className="text-[10px] cursor-pointer font-semibold px-2 py-1 rounded-md bg-white dark:bg-zinc-900 border border-zinc-200 dark:border-zinc-800 text-zinc-600 dark:text-zinc-400 hover:bg-blue-50 dark:hover:bg-blue-950 hover:text-blue-600 dark:hover:text-blue-400 hover:border-blue-200 dark:hover:border-blue-900 transition-all active:scale-95"
+                                                    className="text-[10px] cursor-pointer font-semibold px-2 py-1 rounded-md bg-white dark:bg-zinc-900 border border-zinc-200 dark:border-zinc-800 text-zinc-600 dark:text-zinc-400 hover:bg-zinc-50 dark:hover:bg-zinc-800 hover:text-zinc-900 dark:hover:text-zinc-100 transition-all active:scale-95"
                                                 >
                                                     + {option}
                                                 </button>

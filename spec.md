@@ -6,7 +6,7 @@
 2. Enable support for multiple items in a box (like, multiple items for a meal) [DONE]
 2. Copy formatting
 3. Calendar dropdown for first date (rest gets populate - default today) [DONE]
-4. Colors per category
+4. Colors per category [DONE]
 5. Associate preferred bucket (B-L-D) for each category
 
 # Long-term Items
