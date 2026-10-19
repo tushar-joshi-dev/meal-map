@@ -1,7 +1,7 @@
 import React from 'react';
 import { MAX_MEALS_PER_SLOT, useMealGrid } from '../../context/MealGridContext';
 import SelectedMealLabel from '../item-label/SelectedMealLabel';
-import { CATEGORY_COLORS, getCategoryTheme } from '../category-box/CategoryColors';
+import { getCategoryTheme } from '../category-box/CategoryColors';
 
 const MealGrid: React.FC = () => {
     const { slots, setSlots, startDate } = useMealGrid();

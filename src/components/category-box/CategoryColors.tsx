@@ -1,17 +1,9 @@
-export type CategoryColorToken = 'yellow' | 'emerald' | 'orange' | 'indigo' | 'purple' | 'rose';
+export type CategoryColorToken = 'yellow' | 'emerald' | 'orange' | 'indigo' | 'purple' | 'rose' | 'cyan' | 'fuchsia';
 
 export const CATEGORY_COLORS: Record<CategoryColorToken, {
-    circle: string;
-    bg: string;
-    border: string;
-    text: string;
-    subText: string;
-    hoverBorder: string;
-    darkBg: string;
-    darkBorder: string;
-    darkText: string;
-    darkSubText: string;
-    darkHoverBorder: string;
+    circle: string; bg: string; border: string; text: string; subText: string;
+    hoverBorder: string; darkBg: string; darkBorder: string; darkText: string;
+    darkSubText: string; darkHoverBorder: string;
 }> = {
     yellow: {
         circle: 'bg-yellow-400 dark:bg-yellow-500',
@@ -42,6 +34,16 @@ export const CATEGORY_COLORS: Record<CategoryColorToken, {
         circle: 'bg-rose-500',
         bg: 'bg-rose-50/70', border: 'border-rose-200', text: 'text-rose-800', subText: 'text-rose-700/80', hoverBorder: 'hover:border-rose-300',
         darkBg: 'dark:bg-rose-950/20', darkBorder: 'dark:border-rose-900/40', darkText: 'dark:text-rose-300', darkSubText: 'dark:text-rose-400/80', darkHoverBorder: 'dark:hover:border-rose-800'
+    },
+    cyan: {
+        circle: 'bg-cyan-500',
+        bg: 'bg-cyan-50/70', border: 'border-cyan-200', text: 'text-cyan-800', subText: 'text-cyan-700/80', hoverBorder: 'hover:border-cyan-300',
+        darkBg: 'dark:bg-cyan-950/20', darkBorder: 'dark:border-cyan-900/40', darkText: 'dark:text-cyan-300', darkSubText: 'dark:text-cyan-400/80', darkHoverBorder: 'dark:hover:border-cyan-800'
+    },
+    fuchsia: {
+        circle: 'bg-fuchsia-500',
+        bg: 'bg-fuchsia-50/70', border: 'border-fuchsia-200', text: 'text-fuchsia-800', subText: 'text-fuchsia-700/80', hoverBorder: 'hover:border-fuchsia-300',
+        darkBg: 'dark:bg-fuchsia-950/20', darkBorder: 'dark:border-fuchsia-900/40', darkText: 'dark:text-fuchsia-300', darkSubText: 'dark:text-fuchsia-400/80', darkHoverBorder: 'dark:hover:border-fuchsia-800'
     }
 };
 

@@ -1,7 +1,7 @@
 import logo from '../../assets/logo.png';
 import DatePicker from '../input/DatePicker';
 
-const APP_VERSION = 'v0.1';
+const APP_VERSION = 'v0.2';
 
 const Header = () => {
     return (
