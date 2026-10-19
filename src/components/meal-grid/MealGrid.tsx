@@ -77,19 +77,19 @@ const MealGrid: React.FC = () => {
     return (
         <div className="flex flex-col w-full h-full justify-center overflow-visible">
 
-            {/* COLUMN SUB-HEADERS ROW: Absolute dates sitting above the grid layout */}
+            {/* COLUMN HEADERS: Clean and compact line-height adjustments */}
             <div
-                className="grid gap-x-2 mb-2 w-full text-center select-none"
+                className="grid gap-x-2 mb-1.5 w-full text-center select-none"
                 style={{ gridTemplateColumns: 'repeat(7, minmax(110px, 1fr))' }}
             >
                 {Array.from({ length: 7 }).map((_, colIdx) => {
                     const { dateString, dayName } = getColumnDateHeader(colIdx);
                     return (
                         <div key={colIdx} className="flex flex-col items-center justify-center border-b border-zinc-200/60 dark:border-zinc-800/60 pb-1">
-                            <span className="text-[10px] font-bold text-zinc-700 dark:text-zinc-300">
+                            <span className="text-xs font-bold text-zinc-700 dark:text-zinc-300">
                                 {dateString}
                             </span>
-                            <span className="text-[9px] font-extrabold tracking-wider text-zinc-400 dark:text-zinc-500 mt-0.5">
+                            <span className="text-[10px] font-black tracking-wider text-zinc-400 dark:text-zinc-500 mt-0.5">
                                 {dayName}
                             </span>
                         </div>
@@ -97,9 +97,9 @@ const MealGrid: React.FC = () => {
                 })}
             </div>
 
-            {/* MEAL GRID LAYOUT WORKSPACE */}
+            {/* WORKSPACE MATRIX: Restored absolute h-8 container heights to stay within the 140px/175px footer frame perfectly */}
             <div
-                className="grid gap-x-2 gap-y-1.5 h-full w-full items-center"
+                className="grid gap-x-2 gap-y-1.5 w-full items-center overflow-visible"
                 style={{
                     gridTemplateRows: 'repeat(3, minmax(0, 1fr))',
                     gridTemplateColumns: 'repeat(7, minmax(110px, 1fr))'
@@ -113,20 +113,12 @@ const MealGrid: React.FC = () => {
                             key={slot.id}
                             onDragOver={(e) => handleDragOver(e, slotIdx)}
                             onDrop={(e) => handleDrop(e, slotIdx)}
-                            /* 
-                              1. Added 'overflow-visible' and 'relative' to anchor child layouts.
-                              2. Added 'hover:z-30' so the active cell moves above its adjacent layout neighbors on hover.
-                            */
-                            className={`h-8 w-full flex flex-row gap-1 p-0.5 rounded-lg border transition-all duration-150 relative overflow-visible hover:z-30 ${hasMeals
-                                ? 'bg-transparent border-transparent'
-                                : 'border-dashed border-zinc-200 dark:border-zinc-800'
+                            className={`h-8 w-full flex flex-row gap-1 p-0.5 rounded-lg border transition-all duration-150 relative overflow-visible hover:z-30 ${hasMeals ? 'bg-transparent border-transparent' : 'border-dashed border-zinc-200 dark:border-zinc-800'
                                 }`}
                         >
                             {hasMeals ? (
                                 slot.meals.map((meal, mealIdx) => {
                                     const fullMealString = meal.option ? `${meal.name} (${meal.option})` : meal.name;
-
-                                    // Uses the fallback-safe getter method to retrieve styles securely
                                     const cardTheme = getCategoryTheme(meal.categoryColor);
 
                                     return (
@@ -134,15 +126,16 @@ const MealGrid: React.FC = () => {
                                             key={`${slot.id}-${mealIdx}`}
                                             draggable
                                             onDragStart={(e) => handleDragStart(e, slotIdx, mealIdx)}
-                                            className={`group relative flex-1 min-w-0 h-full flex items-center px-1.5 rounded-md text-[10px] font-medium shadow-xs cursor-grab active:cursor-grabbing hover:shadow-sm transition-shadow text-left ${cardTheme.bg} ${cardTheme.border} ${cardTheme.darkBg} ${cardTheme.darkBorder}`}
+                                            /* Tight padding (px-1 py-0) keeps text centered inside h-8 frame boundaries cleanly */
+                                            className={`group relative flex-1 min-w-0 h-full flex items-center px-1 py-0 rounded-md text-xs font-bold shadow-xs cursor-grab active:cursor-grabbing hover:shadow-sm transition-all text-left ${cardTheme.bg} ${cardTheme.border} ${cardTheme.darkBg} ${cardTheme.darkBorder}`}
                                         >
                                             <div className="truncate w-full pointer-events-none">
                                                 <SelectedMealLabel fullName={fullMealString} colorToken={meal.categoryColor} />
                                             </div>
 
-                                            {/* CUSTOM CSS TOOLTIP STAYS UNTOUCHED */}
+                                            {/* TOOLTIP AXIS */}
                                             <div className="absolute hidden group-hover:flex bottom-full left-1/2 -translate-x-1/2 mb-1.5 z-50 pointer-events-none flex-col items-center">
-                                                <div className="bg-zinc-950 dark:bg-zinc-800 text-white dark:text-zinc-100 text-[10px] px-2 py-1 rounded shadow-md whitespace-nowrap font-normal border border-zinc-800 dark:border-zinc-700 max-w-[200px] truncate">
+                                                <div className="bg-zinc-950 dark:bg-zinc-800 text-white dark:text-zinc-100 text-xs px-2 py-1 rounded-md shadow-md whitespace-nowrap font-medium border border-zinc-800 dark:border-zinc-700 max-w-[200px] truncate">
                                                     {fullMealString}
                                                 </div>
                                                 <div className="w-1.5 h-1.5 bg-zinc-950 dark:bg-zinc-800 border-r border-b border-zinc-800 dark:border-zinc-700 rotate-45 -mt-[4px]"></div>

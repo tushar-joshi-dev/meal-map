@@ -158,9 +158,6 @@ const PlanBuilderPage = () => {
                 <h1 className="text-base font-bold tracking-tight text-zinc-900 dark:text-zinc-50">
                     Weekly Planner Dashboard
                 </h1>
-                <p className="text-[11px] text-zinc-400 dark:text-zinc-500">
-                    Smart auto-balancing workspace. Columns and category lists scale fluidly across device sizes.
-                </p>
             </div>
 
             {/* =======================================================================

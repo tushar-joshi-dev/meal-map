@@ -20,12 +20,14 @@ const SelectedMealLabel: React.FC<SelectedMealLabelProps> = ({ fullName, colorTo
   const theme = getCategoryTheme(colorToken);
 
   return (
-    <div title={fullName} className="truncate text-left w-full select-none">
-      <span className={`font-semibold ${theme.text} ${theme.darkText}`}>
+    <div title={fullName} className="truncate text-left w-full select-none leading-none flex flex-col justify-center">
+      {/* Primary item name set to a solid 12px (text-xs) */}
+      <span className={`text-xs font-bold tracking-wide ${theme.text} ${theme.darkText} truncate`}>
         {baseName}
       </span>
       {subOption && (
-        <span className={`font-medium ml-1.5 whitespace-nowrap ${theme.subText} ${theme.darkSubText}`}>
+        /* Sub-options matching the 12px layout standard with clear medium visibility weights */
+        <span className={`text-xs font-semibold mt-0.5 whitespace-nowrap ${theme.subText} ${theme.darkSubText}`}>
           + {subOption}
         </span>
       )}

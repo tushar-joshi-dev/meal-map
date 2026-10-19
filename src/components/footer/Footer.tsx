@@ -9,30 +9,54 @@ const Footer = () => {
     const handleClipboardCopy = () => {
         if (isCopied) return;
 
-        // Helper utility to match the columns with target calendar date text blocks
-        const getFormattedDateLabel = (colIndex: number) => {
-            const baseDate = startDate ? new Date(startDate + 'T00:00:00') : new Date();
-            baseDate.setDate(baseDate.getDate() + colIndex);
-
-            const dateStr = baseDate.toLocaleDateString('en-US', { month: 'short', day: 'numeric', year: 'numeric' });
-            const dayStr = baseDate.toLocaleDateString('en-US', { weekday: 'short' }).toUpperCase();
-            return `${dateStr} (${dayStr})`;
+        // 1. Array labels mapping your exact row indexes to letters
+        const ROW_LABELS: Record<number, string> = {
+            0: 'B', // Row 0: Breakfast
+            1: 'L', // Row 1: Lunch
+            2: 'D'  // Row 2: Dinner
         };
 
-        // 2. Map items out using active dynamic dates instead of index addresses
-        const menuSummary = slots
-            .filter(s => s.meals && s.meals.length > 0)
-            .map(s => {
-                const dateLabel = getFormattedDateLabel(s.col); // Match via slot column index properties
-                const formattedMeals = s.meals
-                    .map(m => m.option ? `${m.name} (${m.option})` : m.name)
-                    .join(', ');
+        const daySummaries: string[] = [];
 
-                return `${dateLabel}: ${formattedMeals}`;
-            })
-            .join('\n');
+        // 2. Loop chronologically through each of the 7 column days
+        for (let colIdx = 0; colIdx < 7; colIdx++) {
 
-        navigator.clipboard.writeText(menuSummary || "No items selected yet.");
+            // Filter all slots belonging to this specific day column that contain meals
+            const daySlots = slots.filter(s => s.col === colIdx && s.meals && s.meals.length > 0);
+
+            // Skip the entire day block if no slots contain meals
+            if (daySlots.length === 0) continue;
+
+            // Compute the descriptive full-text date header label
+            const baseDate = startDate ? new Date(startDate + 'T00:00:00') : new Date();
+            baseDate.setDate(baseDate.getDate() + colIdx);
+
+            const dateStr = baseDate.toLocaleDateString('en-US', { month: 'long', day: 'numeric', year: 'numeric' });
+            const dayLongName = baseDate.toLocaleDateString('en-US', { weekday: 'long' });
+            const dateHeader = `${dateStr} (${dayLongName})`;
+
+            // Build out meal row bullet entries for this single calendar day column
+            const mealBullets = daySlots
+                // Sort rows sequentially (Row 0: Breakfast -> Row 1: Lunch -> Row 2: Dinner)
+                .sort((a, b) => a.row - b.row)
+                .map(slot => {
+                    const label = ROW_LABELS[slot.row - 1] || `Row ${slot.row}`;
+                    const itemsString = slot.meals
+                        .map(m => m.option ? `${m.name} & ${m.option}` : m.name)
+                        .join(', ');
+
+                    return `* ${label} - ${itemsString}`;
+                })
+                .join('\n');
+
+            // Bundle the date header with its respective child bullets
+            daySummaries.push(`${dateHeader}\n${mealBullets}`);
+        }
+
+        // 3. Join the compiled target calendar days with clean double line breaks
+        const finalOutputString = daySummaries.join('\n\n');
+
+        navigator.clipboard.writeText(finalOutputString || "No items selected yet.");
 
         setIsCopied(true);
         setTimeout(() => {
@@ -70,7 +94,7 @@ const Footer = () => {
                     )}
 
                     {/* Dynamic Label Swap */}
-                    <span className="text-[10px] font-bold tracking-wider uppercase transition-colors">
+                    <span className="text-[12px] font-black tracking-wider uppercase transition-colors">
                         {isCopied ? 'Copied' : 'Copy Menu'}
                     </span>
                 </button>
