@@ -18,8 +18,8 @@ const Footer = () => {
 
         const daySummaries: string[] = [];
 
-        // 2. Loop chronologically through each of the 7 column days
-        for (let colIdx = 0; colIdx < 7; colIdx++) {
+        // 2. Loop chronologically through each of the 7 column days - column values are not 0-index
+        for (let colIdx = 1; colIdx <= 7; colIdx++) {
 
             // Filter all slots belonging to this specific day column that contain meals
             const daySlots = slots.filter(s => s.col === colIdx && s.meals && s.meals.length > 0);
@@ -29,7 +29,7 @@ const Footer = () => {
 
             // Compute the descriptive full-text date header label
             const baseDate = startDate ? new Date(startDate + 'T00:00:00') : new Date();
-            baseDate.setDate(baseDate.getDate() + colIdx);
+            baseDate.setDate(baseDate.getDate() + (colIdx - 1));
 
             const dateStr = baseDate.toLocaleDateString('en-US', { month: 'long', day: 'numeric', year: 'numeric' });
             const dayLongName = baseDate.toLocaleDateString('en-US', { weekday: 'long' });
