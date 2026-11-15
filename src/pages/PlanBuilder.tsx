@@ -14,7 +14,6 @@ interface FoodCategory {
 const PlanBuilderPage = () => {
     const { slots, addMealToGrid } = useMealGrid();
 
-    // Mocking 6 categories
     const foodData: FoodCategory[] = [
         {
             title: "Breakfast",
@@ -122,6 +121,11 @@ const PlanBuilderPage = () => {
             ]
         },
     ];
+
+    // Sort items in the list for ease of access to the user
+    foodData.forEach((fc: FoodCategory) => {
+        fc.items.sort((item1, item2) => item1.name.localeCompare(item2.name));
+    });
 
     // Helper function to build a dynamically balanced matrix for a specific column target
     const buildBalancedColumns = (numCols: number) => {
